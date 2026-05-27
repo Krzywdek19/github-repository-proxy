@@ -1,5 +1,6 @@
 package pl.exceptionhandled.githubrepositoryproxy;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -9,10 +10,16 @@ import java.util.List;
 
 @Component
 class GithubClient {
+
     private final RestClient restClient;
 
-    GithubClient(RestClient githubRestClient) {
-        this.restClient = githubRestClient;
+    GithubClient(
+            RestClient.Builder restClientBuilder,
+            @Value("${github.api.base-url}") String githubBaseUrl
+    ) {
+        this.restClient = restClientBuilder
+                .baseUrl(githubBaseUrl)
+                .build();
     }
 
     List<GithubRepositoryDto> getRepositories(String username) {
